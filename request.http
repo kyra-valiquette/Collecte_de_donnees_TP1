@@ -1,0 +1,82 @@
+### PLACES ressources
+
+### Create a place
+POST http://localhost:3000/api/v1/places
+Content-Type: application/json
+
+{
+  "name": "Bibliothèque principale",
+  "description": "Espace calme avec prises.",
+  "category": "LIBRARY",
+  "address": "Pavillon A, local A-210",
+  "services": [
+    "WIFI",
+    "POWER_OUTLETS"
+  ],
+  "status": "ACTIVE"
+}
+
+
+### Get all places
+GET http://localhost:3000/api/v1/places
+
+
+### Get one place
+# Put ID from post above
+GET http://localhost:3000/api/v1/places/d3f6e12e-6a0d-4501-b475-12e5e0f0869b
+
+
+### Update a place
+# Put ID from post above
+PATCH http://localhost:3000/api/v1/places/d3f6e12e-6a0d-4501-b475-12e5e0f0869b
+Content-Type: application/json
+
+{
+  "description": "Update test",
+  "status": "ACTIVE"
+}
+
+
+### Delete a place
+# Put ID from post above
+DELETE http://localhost:3000/api/v1/places/dd70b4fb-a8c3-4020-b76a-2767e7ff5bed
+
+
+### REVIEWS ressources
+
+### Create a review
+# Put a place ID
+POST http://localhost:3000/api/v1/reviews
+Content-Type: application/json
+
+{
+  "placeId": "d3f6e12e-6a0d-4501-b475-12e5e0f0869b",
+  "authorName": "Samira",
+  "rating": 4,
+  "comment": "test"
+}
+
+
+### Get all reviews
+GET http://localhost:3000/api/v1/reviews
+
+
+### Get one review
+# Put ID from post above
+GET http://localhost:3000/api/v1/reviews/8d8f6e6a-3bec-4577-87d6-fab6f2e72c54
+
+
+### Update a review
+# Put ID from post above
+PATCH http://localhost:3000/api/v1/reviews/8d8f6e6a-3bec-4577-87d6-fab6f2e72c54
+Content-Type: application/json
+
+{
+  "rating": 5,
+  "comment": "Update"
+}
+
+
+### Delete a review
+# Put ID from post above
+DELETE http://localhost:3000/api/v1/reviews/8d8f6e6a-3bec-4577-87d6-fab6f2e72c54

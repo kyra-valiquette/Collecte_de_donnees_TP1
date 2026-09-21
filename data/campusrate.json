@@ -1,4 +1,31 @@
 {
-  "places": [],
-  "reviews": []
+  "places": [
+    {
+      "id": "d3f6e12e-6a0d-4501-b475-12e5e0f0869b",
+      "name": "Bibliothèque principale",
+      "description": "Update test",
+      "category": "LIBRARY",
+      "address": "Pavillon A, local A-210",
+      "services": [
+        "WIFI",
+        "POWER_OUTLETS"
+      ],
+      "status": "ACTIVE",
+      "averageRating": null,
+      "reviewCount": 0,
+      "createdAt": "2026-09-21T18:18:11.799Z",
+      "updatedAt": "2026-09-21T18:22:00.234Z"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "379fb277-8cb8-4b73-bea1-6dfbc87f9746",
+      "placeId": "d3f6e12e-6a0d-4501-b475-12e5e0f0869b",
+      "authorName": "Samira",
+      "rating": 4,
+      "comment": "test",
+      "createdAt": "2026-09-21T18:23:07.676Z",
+      "updatedAt": "2026-09-21T18:23:07.676Z"
+    }
+  ]
 }

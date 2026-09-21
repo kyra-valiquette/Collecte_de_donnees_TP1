@@ -48,8 +48,8 @@ export class PlacesService {
   async update(id: string, updatePlaceDto: UpdatePlaceDto) {
     const data = await this.jsonRepository.readData();
     const place = data.places.find((place: Place) => place.id === id,);
-    Object.assign(place, UpdatePlaceDto);
-    place.updatedAt = new Date();
+    Object.assign(place, updatePlaceDto);
+    place.updatedAt = new Date().toISOString();
     await this.jsonRepository.writeData(data);
     return place;
   }
