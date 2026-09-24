@@ -2,6 +2,9 @@ import { NestFactory } from '@nestjs/core';
 import { VersioningType } from '@nestjs/common';
 import { AppModule } from './app.module.js';
 import { ValidationPipe } from '@nestjs/common';
+import { configureSwagger } from './configure-swagger.js';
+
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
@@ -23,6 +26,9 @@ async function bootstrap() {
   if (!process.env.DATA_FILE_PATH) {
     throw new Error('DATA_FILE_PATH configuration error');
   }
+
+  configureSwagger(app);
+
   await app.listen(port);
 }
 
