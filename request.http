@@ -1,0 +1,472 @@
+### PLACES ressources
+
+### Create a place
+POST http://localhost:3000/api/v1/places
+Content-Type: application/json
+
+{
+  "name": "Bibliothèque principale",
+  "description": "Espace calme avec prises.",
+  "category": "LIBRARY",
+  "address": "Pavillon A, local A-210",
+  "services": [
+    "WIFI",
+    "POWER_OUTLETS"
+  ],
+  "status": "ACTIVE"
+}
+
+
+### Get all places
+GET http://localhost:3000/api/v1/places
+
+
+### Get one place
+# Put ID from post above
+GET http://localhost:3000/api/v1/places/aeaee426-7998-4b99-abf7-911e69501276
+
+
+### Update a place
+# Put ID from post above
+PATCH http://localhost:3000/api/v1/places/d3f6e12e-6a0d-4501-b475-12e5e0f0869b
+Content-Type: application/json
+
+{
+  "description": "Update test",
+  "status": "INACTIVE"
+}
+
+
+### Delete a place
+# Put ID from post above
+DELETE http://localhost:3000/api/v1/places/d3f6e12e-6a0d-4501-b475-12e5e0f0869b
+
+
+### REVIEWS ressources
+
+### Create a review
+# Put a place ID
+POST http://localhost:3000/api/v1/reviews
+Content-Type: application/json
+
+{
+  "placeId": "d3f6e12e-6a0d-4501-b475-12e5e0f0869b",
+  "authorName": "Samira",
+  "rating": 4,
+  "comment": "test"
+}
+
+
+### Get all reviews
+GET http://localhost:3000/api/v1/reviews
+
+
+### Get one review
+# Put ID from post above
+GET http://localhost:3000/api/v1/reviews/379fb277-8cb8-4b73-bea1-6dfbc87f9746
+
+
+### Update a review
+# Put ID from post above
+PATCH http://localhost:3000/api/v1/reviews/379fb277-8cb8-4b73-bea1-6dfbc87f9746
+Content-Type: application/json
+
+{
+  "rating": 5,
+  "comment": "Update"
+}
+
+
+### Delete a review
+# Put ID from post above
+DELETE http://localhost:3000/api/v1/reviews/379fb277-8cb8-4b73-bea1-6dfbc87f9746
+
+
+### PLACES VALIDATIONS
+
+### Invalid category (400)
+POST http://localhost:3000/api/v1/places
+Content-Type: application/json
+
+{
+  "name": "Test Place",
+  "description": "test",
+  "category": "test",
+  "address": "test",
+  "status": "ACTIVE"
+}
+
+### Invalid status (400)
+POST http://localhost:3000/api/v1/places
+Content-Type: application/json
+
+{
+  "name": "Test Place",
+  "description": "test",
+  "category": "LIBRARY",
+  "address": "test",
+  "status": "test"
+}
+
+
+### Missing name (400)
+POST http://localhost:3000/api/v1/places
+Content-Type: application/json
+
+{
+  "description": "test",
+  "category": "LIBRARY",
+  "address": "test",
+  "status": "ACTIVE"
+}
+
+
+### Wrong type (400)
+POST http://localhost:3000/api/v1/places
+Content-Type: application/json
+
+{
+  "name": 12345,
+  "description": "test",
+  "category": "LIBRARY",
+  "address": "test",
+  "status": "ACTIVE"
+}
+
+
+### Wrong type 2 (400)
+POST http://localhost:3000/api/v1/places
+Content-Type: application/json
+
+{
+  "name": "Test Place",
+  "description": "test",
+  "category": "LIBRARY",
+  "address": "test",
+  "services": "WIFI",
+  "status": "ACTIVE"
+}
+
+
+### Wrong type 3 (400)
+POST http://localhost:3000/api/v1/places
+Content-Type: application/json
+
+{
+  "name": "Test Place",
+  "description": "test",
+  "category": "LIBRARY",
+  "address": "test",
+  "services": [
+    "WIFI",
+    123
+  ],
+  "status": "ACTIVE"
+}
+
+
+### Duplicate services (400)
+POST http://localhost:3000/api/v1/places
+Content-Type: application/json
+
+{
+  "name": "Test Place",
+  "description": "test",
+  "category": "LIBRARY",
+  "address": "test",
+  "services": [
+    "WIFI",
+    "WIFI"
+  ],
+  "status": "ACTIVE"
+}
+
+
+### Unknown property (400)
+POST http://localhost:3000/api/v1/places
+Content-Type: application/json
+
+{
+  "name": "Test Place",
+  "description": "test",
+  "category": "LIBRARY",
+  "address": "test",
+  "status": "ACTIVE",
+  "unknownProperty": "test"
+}
+
+
+### attempting to set calculated/server fields (400)
+POST http://localhost:3000/api/v1/places
+Content-Type: application/json
+
+{
+  "name": "Test Place",
+  "description": "test",
+  "category": "LIBRARY",
+  "address": "test",
+  "averageRating": 5,
+  "reviewCount": 100,
+  "createdAt": "2026-09-24T12:00:00.000Z",
+  "updatedAt": "2026-09-24T12:00:00.000Z"
+}
+
+### Invalid 1 (400)
+### put place ID
+PATCH http://localhost:3000/api/v1/places/aeaee426-7998-4b99-abf7-911e69501276
+Content-Type: application/json
+
+{
+  "category": "test"
+}
+
+
+### Invalid 2 (400)
+### put place ID
+PATCH http://localhost:3000/api/v1/places/aeaee426-7998-4b99-abf7-911e69501276
+Content-Type: application/json
+
+{
+  "status": "test"
+}
+
+
+### Wrong type 4 (400)
+### put place ID
+PATCH http://localhost:3000/api/v1/places/aeaee426-7998-4b99-abf7-911e69501276
+Content-Type: application/json
+
+{
+  "name": 12345
+}
+
+
+### Unknown property (400)
+### put place ID
+PATCH http://localhost:3000/api/v1/places/aeaee426-7998-4b99-abf7-911e69501276
+Content-Type: application/json
+
+{
+  "unknownProperty": "not allowed"
+}
+
+### REVIEWS VALIDATIONS
+
+### Rating below minimum (400)
+### put place ID
+POST http://localhost:3000/api/v1/reviews
+Content-Type: application/json
+
+{
+  "placeId": "aeaee426-7998-4b99-abf7-911e69501276",
+  "authorName": "test",
+  "rating": 0,
+  "comment": "test"
+}
+
+
+### Rating above maximum (400)
+### put place ID
+POST http://localhost:3000/api/v1/reviews
+Content-Type: application/json
+
+{
+  "placeId": "aeaee426-7998-4b99-abf7-911e69501276",
+  "authorName": "test",
+  "rating": 6,
+  "comment": "test"
+}
+
+
+### Rating is not int (400)
+### put place ID
+POST http://localhost:3000/api/v1/reviews
+Content-Type: application/json
+
+{
+  "placeId": "aeaee426-7998-4b99-abf7-911e69501276",
+  "authorName": "test",
+  "rating": 4.5,
+  "comment": "test"
+}
+
+
+### Rating has wrong type (400)
+### put place ID
+POST http://localhost:3000/api/v1/reviews
+Content-Type: application/json
+
+{
+  "placeId": "aeaee426-7998-4b99-abf7-911e69501276",
+  "authorName": "test",
+  "rating": "5",
+  "comment": "test"
+}
+
+
+### Missing authorName (400)
+### put place ID
+POST http://localhost:3000/api/v1/reviews
+Content-Type: application/json
+
+{
+  "placeId": "aeaee426-7998-4b99-abf7-911e69501276",
+  "rating": 5,
+  "comment": "test"
+}
+
+
+### Missing comment (400)
+### put place ID
+POST http://localhost:3000/api/v1/reviews
+Content-Type: application/json
+
+{
+  "placeId": "aeaee426-7998-4b99-abf7-911e69501276",
+  "authorName": "test",
+  "rating": 5
+}
+
+
+### Wrong type for comment (400)
+### put place ID
+POST http://localhost:3000/api/v1/reviews
+Content-Type: application/json
+
+{
+  "placeId": "aeaee426-7998-4b99-abf7-911e69501276",
+  "authorName": "test",
+  "rating": 5,
+  "comment": 12345
+}
+
+
+### Unknown property (400)
+### put place ID
+POST http://localhost:3000/api/v1/reviews
+Content-Type: application/json
+
+{
+  "placeId": "aeaee426-7998-4b99-abf7-911e69501276",
+  "authorName": "test",
+  "rating": 5,
+  "comment": "test",
+  "unknownProperty": "not allowed"
+}
+
+
+### attempt to set auto fields (400)
+### put place ID
+POST http://localhost:3000/api/v1/reviews
+Content-Type: application/json
+
+{
+  "placeId": "aeaee426-7998-4b99-abf7-911e69501276",
+  "authorName": "test",
+  "rating": 5,
+  "comment": "test",
+  "id": "test",
+  "createdAt": "2026-09-24T12:00:00.000Z",
+  "updatedAt": "2026-09-24T12:00:00.000Z"
+}
+
+### Invalid rating (400)
+### put review ID
+PATCH http://localhost:3000/api/v1/reviews/5fe20bad-0730-4ee7-8e5d-fb4423b74297
+Content-Type: application/json
+
+{
+  "rating": 10
+}
+
+
+### Wrong type (400)
+### put review ID
+PATCH http://localhost:3000/api/v1/reviews/5fe20bad-0730-4ee7-8e5d-fb4423b74297
+Content-Type: application/json
+
+{
+  "rating": "five"
+}
+
+
+### Unknown property (400)
+### put review ID
+PATCH http://localhost:3000/api/v1/reviews/5fe20bad-0730-4ee7-8e5d-fb4423b74297
+Content-Type: application/json
+
+{
+  "placeId": "try"
+}
+
+
+### Unknown property during review update (400)
+### put review ID
+PATCH http://localhost:3000/api/v1/reviews/5fe20bad-0730-4ee7-8e5d-fb4423b74297
+Content-Type: application/json
+
+{
+  "somethingElse": "try"
+}
+
+### Review references a place that does not exist (404)
+POST http://localhost:3000/api/v1/reviews
+Content-Type: application/json
+
+{
+  "placeId": "00000000-0000-0000-0000-000000000000",
+  "authorName": "test",
+  "rating": 5,
+  "comment": "test"
+}
+
+
+### GET place does not exist (404)
+GET http://localhost:3000/api/v1/places/00000000-0000-0000-0000-000000000000
+
+
+### Update place does not exist (404)
+PATCH http://localhost:3000/api/v1/places/00000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+{
+  "name": "test"
+}
+
+
+### Delete place does not exist (404)
+DELETE http://localhost:3000/api/v1/places/00000000-0000-0000-0000-000000000000
+
+
+### Get review does not exist (404)
+GET http://localhost:3000/api/v1/reviews/00000000-0000-0000-0000-000000000000
+
+
+### Update review does not exist (404)
+PATCH http://localhost:3000/api/v1/reviews/00000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+{
+  "rating": 5
+}
+
+
+### Delete review does not exist (404)
+DELETE http://localhost:3000/api/v1/reviews/00000000-0000-0000-0000-000000000000
+
+### Problem Details test
+### put place ID
+POST http://localhost:3000/api/v1/reviews
+Content-Type: application/json
+
+{
+  "placeId": "d3f6e12e-6a0d-4501-b475-12e5e0f0869b",
+  "authorName": "test",
+  "rating": 10,
+  "comment": "test"
+}
+
+
+### Not Found error => problem details
+
+GET http://localhost:3000/api/v1/places/00000000-0000-0000-0000-000000000000
