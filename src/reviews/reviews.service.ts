@@ -4,6 +4,7 @@ import { UpdateReviewDto } from './dto/update-review.dto.js';
 import { JsonRepository } from '../common/persistence/json.repository.js';
 import { randomUUID } from 'node:crypto';
 import { Review } from './entities/review.entity.js';
+import { Place } from '../places/entities/place.entity.js';
 
 @Injectable()
 export class ReviewsService {
@@ -11,6 +12,15 @@ export class ReviewsService {
 
   async create(createReviewDto: CreateReviewDto) {
     const data = await this.jsonRepository.readData();
+    const place = data.places.find(
+      (place: Place) => place.id === createReviewDto.placeId,
+    );
+
+    if (!place) {
+      throw new NotFoundException(
+        `Place with id '${createReviewDto.placeId}' not found.`,
+      );
+    }
 
     const review = {
       id: randomUUID(),
@@ -30,6 +40,8 @@ export class ReviewsService {
     const data = await this.jsonRepository.readData();
     const reviews = data.reviews;
 
+
+
     return reviews;
   }
 
@@ -46,6 +58,11 @@ export class ReviewsService {
   async update(id: string, updateReviewDto: UpdateReviewDto) {
     const data = await this.jsonRepository.readData();
     const review = data.reviews.find((review: Review) => review.id === id,);
+    if (!review) {
+      throw new NotFoundException(
+        `Review with id '${id}' not found.`,
+      );
+    }
     Object.assign(review, updateReviewDto);
     review.updatedAt = new Date().toISOString();
     await this.jsonRepository.writeData(data);

@@ -1,8 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePlaceDto } from './dto/create-place.dto.js';
 import { UpdatePlaceDto } from './dto/update-place.dto.js';
 import { JsonRepository } from '../common/persistence/json.repository.js';
-import { randomUUID } from 'node:crypto';
+import { createDecipheriv, randomUUID } from 'node:crypto';
 import { Place } from './entities/place.entity.js';
 
 @Injectable()
@@ -11,6 +11,7 @@ export class PlacesService {
 
   async create(createPlaceDto: CreatePlaceDto) {
     const data = await this.jsonRepository.readData();
+    
 
     const place = {
     id: randomUUID(),
@@ -48,6 +49,11 @@ export class PlacesService {
   async update(id: string, updatePlaceDto: UpdatePlaceDto) {
     const data = await this.jsonRepository.readData();
     const place = data.places.find((place: Place) => place.id === id,);
+    if (!place) {
+      throw new NotFoundException(
+        `Place with id '${id}' not found.`,
+      );
+    }
     Object.assign(place, updatePlaceDto);
     place.updatedAt = new Date().toISOString();
     await this.jsonRepository.writeData(data);
@@ -61,6 +67,12 @@ export class PlacesService {
 
     if (placeIndex === -1) {
       throw new NotFoundException(`Place with id '${id}' not found.`,);
+    }
+
+    const place = data.places.find((place: Place) => place.id === id,);
+
+    if (place.reviewCount <= 0){
+      throw new ConflictException('Cannot delete a place that has reviews.',);
     }
 
     const [deletedPlace] = data.places.splice(placeIndex, 1);

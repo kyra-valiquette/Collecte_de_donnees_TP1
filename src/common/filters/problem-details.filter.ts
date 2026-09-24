@@ -22,18 +22,6 @@ export class ProblemDetailsFilter implements ExceptionFilter {
 
       if (typeof exceptionResponse === 'string') {
         detail = exceptionResponse;
-      } else if (
-        typeof exceptionResponse === 'object' &&
-        exceptionResponse !== null &&
-        'message' in exceptionResponse
-      ) {
-        const message = exceptionResponse.message;
-
-        if (Array.isArray(message)) {
-          detail = message.join(', ');
-        } else if (typeof message === 'string') {
-          detail = message;
-        }
       }
 
       if (status === HttpStatus.BAD_REQUEST) {

@@ -2,8 +2,17 @@
   "places": [
     {
       "id": "d3f6e12e-6a0d-4501-b475-12e5e0f0869b",
-      "name": "Bibliothèque principale",
       "description": "Update test",
+      "status": "INACTIVE",
+      "averageRating": null,
+      "reviewCount": 0,
+      "createdAt": "2026-09-21T18:18:11.799Z",
+      "updatedAt": "2026-09-24T21:04:03.725Z"
+    },
+    {
+      "id": "35b74e53-8f7a-4b7f-9c6a-c99a8bc7ff6c",
+      "name": "Bibliothèque principale",
+      "description": "Espace calme avec prises.",
       "category": "LIBRARY",
       "address": "Pavillon A, local A-210",
       "services": [
@@ -13,19 +22,35 @@
       "status": "ACTIVE",
       "averageRating": null,
       "reviewCount": 0,
-      "createdAt": "2026-09-21T18:18:11.799Z",
-      "updatedAt": "2026-09-21T18:22:00.234Z"
+      "createdAt": "2026-09-24T21:03:03.605Z",
+      "updatedAt": "2026-09-24T21:03:03.606Z"
+    },
+    {
+      "id": "aeaee426-7998-4b99-abf7-911e69501276",
+      "name": "Test Place",
+      "description": "A place with duplicate services.",
+      "category": "LIBRARY",
+      "address": "Building A, Room 101",
+      "services": [
+        "WIFI",
+        "WIFI"
+      ],
+      "status": "ACTIVE",
+      "averageRating": null,
+      "reviewCount": 0,
+      "createdAt": "2026-09-24T21:05:24.493Z",
+      "updatedAt": "2026-09-24T21:05:24.493Z"
     }
   ],
   "reviews": [
     {
-      "id": "379fb277-8cb8-4b73-bea1-6dfbc87f9746",
+      "id": "5fe20bad-0730-4ee7-8e5d-fb4423b74297",
       "placeId": "d3f6e12e-6a0d-4501-b475-12e5e0f0869b",
       "authorName": "Samira",
       "rating": 4,
       "comment": "test",
-      "createdAt": "2026-09-21T18:23:07.676Z",
-      "updatedAt": "2026-09-21T18:23:07.676Z"
+      "createdAt": "2026-09-24T21:04:26.857Z",
+      "updatedAt": "2026-09-24T21:04:26.857Z"
     }
   ]
 }
