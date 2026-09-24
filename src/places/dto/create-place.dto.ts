@@ -1,4 +1,4 @@
-import { IsArray, IsIn, IsNotEmpty, IsOptional, IsString,} from 'class-validator';
+import { ArrayUnique, IsArray, IsIn, IsNotEmpty, IsOptional, IsString,} from 'class-validator';
 
 export class CreatePlaceDto {
   @IsString()
@@ -27,6 +27,7 @@ export class CreatePlaceDto {
 
   @IsOptional()
   @IsArray()
+  @ArrayUnique()
   @IsString({ each: true })
   services?: string[];
 
