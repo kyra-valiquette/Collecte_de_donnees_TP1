@@ -1,0 +1,189 @@
+{
+  "info": {
+    "_postman_id": "593e9aba-cc4d-496d-a850-1557cb914fee",
+    "name": "CampusRate API - TP1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58508632",
+    "_collection_link": "https://go.postman.co/collection/58508632-593e9aba-cc4d-496d-a850-1557cb914fee?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "01 - Get all places",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/places",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "places"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "02 - Create place",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Test\",\r\n  \"description\": \"tesgt\",\r\n  \"category\": \"LIBRARY\",\r\n  \"address\": \"test\",\r\n  \"services\": [\r\n    \"WIFI\",\r\n    \"POWER_OUTLETS\"\r\n  ],\r\n  \"status\": \"ACTIVE\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/places",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "places"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "03 - Update place",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"description\": \"Update test\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/places/5a319d89-b94d-4693-b418-01537fd78f20",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "places",
+            "5a319d89-b94d-4693-b418-01537fd78f20"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "04 - Get place by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/places/5a319d89-b94d-4693-b418-01537fd78f20",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "places",
+            "5a319d89-b94d-4693-b418-01537fd78f20"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "05 - Create review",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"placeId\": \"5a319d89-b94d-4693-b418-01537fd78f20\",\r\n  \"authorName\": \"John Doe\",\r\n  \"rating\": 5,\r\n  \"comment\": \"Excellent endroit pour étudier\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/reviews",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "reviews"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "06 - Get reviews by place",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/reviews/places/5a319d89-b94d-4693-b418-01537fd78f20",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "reviews",
+            "places",
+            "5a319d89-b94d-4693-b418-01537fd78f20"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "07 - Update review",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"rating\": 1\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/reviews/56daf531-dfb9-4711-b025-7c74a3fb90bf",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "reviews",
+            "56daf531-dfb9-4711-b025-7c74a3fb90bf"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "08 - Delete review",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "DELETE {{baseUrl}}/reviews/56daf531-dfb9-4711-b025-7c74a3fb90bf",
+          "host": [
+            "DELETE {{baseUrl}}"
+          ],
+          "path": [
+            "reviews",
+            "56daf531-dfb9-4711-b025-7c74a3fb90bf"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
