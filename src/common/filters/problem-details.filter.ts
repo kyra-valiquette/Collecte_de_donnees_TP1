@@ -17,17 +17,15 @@ export class ProblemDetailsFilter implements ExceptionFilter {
 
     if (exception instanceof HttpException) {
       status = exception.getStatus();
-
       const exceptionResponse = exception.getResponse();
 
       if (typeof exceptionResponse === 'string') {
         detail = exceptionResponse;
       } else if (
         typeof exceptionResponse === 'object' &&
-        exceptionResponse !== null &&
-        'message' in exceptionResponse
+        exceptionResponse !== null
       ) {
-        const message = exceptionResponse.message;
+        const message = (exceptionResponse as { message?: unknown }).message;
 
         if (Array.isArray(message)) {
           detail = message.join(', ');
