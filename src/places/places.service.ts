@@ -2,8 +2,9 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import { CreatePlaceDto } from './dto/create-place.dto.js';
 import { UpdatePlaceDto } from './dto/update-place.dto.js';
 import { JsonRepository } from '../common/persistence/json.repository.js';
-import { createDecipheriv, randomUUID } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
 import { Place } from './entities/place.entity.js';
+import { QueryPlaceDto } from './dto/query-place.dto.js';
 
 @Injectable()
 export class PlacesService {
@@ -11,7 +12,7 @@ export class PlacesService {
 
   async create(createPlaceDto: CreatePlaceDto) {
     const data = await this.jsonRepository.readData();
-    
+
 
     const place = {
     id: randomUUID(),
@@ -29,11 +30,40 @@ export class PlacesService {
     return place;
   }
 
-  async findAll() {
+  async findAll(query: QueryPlaceDto) {
     const data = await this.jsonRepository.readData();
-    const places = data.places;
 
-    return places;
+    let places = data.places;
+
+    if (query.category) {
+      places = places.filter(
+        (place: Place) => place.category === query.category,
+      );
+    }
+
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+
+    const totalItems = places.length;
+    const totalPages = Math.ceil(totalItems / limit);
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+
+    const paginatedPlaces = places.slice(
+      startIndex,
+      endIndex,
+    );
+
+    return {
+      data: paginatedPlaces,
+      pagination: {
+        page,
+        limit,
+        totalItems,
+        totalPages,
+      },
+    };
   }
 
   async findOne(id: string) {

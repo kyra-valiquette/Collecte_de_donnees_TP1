@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { PlacesService } from './places.service.js';
 import { CreatePlaceDto } from './dto/create-place.dto.js';
 import { UpdatePlaceDto } from './dto/update-place.dto.js';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { Place } from './entities/place.entity.js';
+import { QueryPlaceDto } from './dto/query-place.dto.js';
 
 @ApiTags('Places')
 @Controller('places')
@@ -20,15 +21,14 @@ export class PlacesController {
     return this.placesService.create(createPlaceDto);
   }
 
-  @ApiOperation({ summary: 'Get all places' })
+  @ApiOperation({ summary: 'Get places' })
   @ApiResponse({
-  status: 200,
-  description: 'Places successfully found.',
-  type: [Place],
+    status: 200,
+    description: 'Paginated list of places.',
   })
   @Get()
-  findAll() {
-    return this.placesService.findAll();
+  findAll(@Query() query: QueryPlaceDto) {
+    return this.placesService.findAll(query);
   }
 
   @ApiOperation({ summary: 'Get a specific place' })
