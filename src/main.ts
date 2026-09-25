@@ -3,7 +3,7 @@ import { VersioningType } from '@nestjs/common';
 import { AppModule } from './app.module.js';
 import { ValidationPipe } from '@nestjs/common';
 import { configureSwagger } from './configure-swagger.js';
-
+import { ProblemDetailsFilter } from './common/filters/problem-details.filter.js';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -26,7 +26,7 @@ async function bootstrap() {
   if (!process.env.DATA_FILE_PATH) {
     throw new Error('DATA_FILE_PATH configuration error');
   }
-
+  app.useGlobalFilters(new ProblemDetailsFilter());
   configureSwagger(app);
 
   await app.listen(port);

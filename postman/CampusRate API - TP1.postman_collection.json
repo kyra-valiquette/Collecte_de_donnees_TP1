@@ -25,6 +25,87 @@
       "response": []
     },
     {
+      "name": "01.1 - Get all places custom page",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/places?page=1&limit=2",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "places"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "2"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "0.1.2 - Get all places custom category",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/places?category=LIBRARY",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "places"
+          ],
+          "query": [
+            {
+              "key": "category",
+              "value": "LIBRARY"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "0.1.3 - Get all places filter + page",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/places?category=LIBRARY&page=2&limit=1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "places"
+          ],
+          "query": [
+            {
+              "key": "category",
+              "value": "LIBRARY"
+            },
+            {
+              "key": "page",
+              "value": "2"
+            },
+            {
+              "key": "limit",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
       "name": "02 - Create place",
       "request": {
         "method": "POST",
