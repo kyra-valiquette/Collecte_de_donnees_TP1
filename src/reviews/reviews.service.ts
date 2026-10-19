@@ -1,178 +1,129 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { randomUUID } from 'node:crypto';
+import { Model } from 'mongoose';
 import { CreateReviewDto } from './dto/create-review.dto.js';
 import { UpdateReviewDto } from './dto/update-review.dto.js';
-import { JsonRepository } from '../common/persistence/json.repository.js';
-import { randomUUID } from 'node:crypto';
-import { Review } from './entities/review.entity.js';
-import { Place } from '../places/entities/place.entity.js';
+import { Place, PlaceDocument } from '../places/schemas/place.schema.js';
+import { Review, ReviewDocument } from './schemas/review.schema.js';
 
 @Injectable()
 export class ReviewsService {
   constructor(
-    private readonly jsonRepository: JsonRepository,
+    @InjectModel(Place.name)
+    private readonly placeModel: Model<PlaceDocument>,
+    @InjectModel(Review.name)
+    private readonly reviewModel: Model<ReviewDocument>,
   ) {}
 
   async create(createReviewDto: CreateReviewDto) {
-    const data = await this.jsonRepository.readData();
-
-    const place = data.places.find(
-      (place: Place) => place.id === createReviewDto.placeId,
-    );
+    const place = await this.placeModel.findOne({ id: createReviewDto.placeId });
 
     if (!place) {
-      throw new NotFoundException(
-        `Place with id '${createReviewDto.placeId}' not found.`,
-      );
+      throw new NotFoundException(`Place with id '${createReviewDto.placeId}' not found.`);
     }
 
-    const review = {
+    const createdReview = await this.reviewModel.create({
       id: randomUUID(),
       ...createReviewDto,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+    });
 
-    data.reviews.push(review);
+    await this.syncPlaceStats(createReviewDto.placeId);
 
-    this.updatePlaceRating(place, data.reviews);
-
-    await this.jsonRepository.writeData(data);
-
-    return review;
+    return createdReview.toJSON();
   }
 
   async findAll() {
-    const data = await this.jsonRepository.readData();
-
-    return data.reviews;
+    return this.reviewModel.find().sort({ createdAt: -1 }).lean();
   }
 
   async findOne(id: string) {
-    const data = await this.jsonRepository.readData();
-
-    const review = data.reviews.find(
-      (review: Review) => review.id === id,
-    );
+    const review = await this.reviewModel.findOne({ id });
 
     if (!review) {
-      throw new NotFoundException(
-        `Review with id '${id}' not found.`,
-      );
+      throw new NotFoundException(`Review with id '${id}' not found.`);
     }
 
-    return review;
+    return review.toJSON();
   }
 
-  async update(
-    id: string,
-    updateReviewDto: UpdateReviewDto,
-  ) {
-    const data = await this.jsonRepository.readData();
-
-    const review = data.reviews.find(
-      (review: Review) => review.id === id,
-    );
+  async update(id: string, updateReviewDto: UpdateReviewDto) {
+    const review = await this.reviewModel.findOne({ id });
 
     if (!review) {
-      throw new NotFoundException(
-        `Review with id '${id}' not found.`,
-      );
+      throw new NotFoundException(`Review with id '${id}' not found.`);
     }
 
-    Object.assign(review, updateReviewDto);
-
-    review.updatedAt = new Date().toISOString();
-
-    const place = data.places.find(
-      (place: Place) => place.id === review.placeId,
+    const updatedReview = await this.reviewModel.findOneAndUpdate(
+      { id },
+      { $set: updateReviewDto },
+      { new: true },
     );
 
-    if (!place) {
-      throw new NotFoundException(
-        `Place with id '${review.placeId}' not found.`,
-      );
+    if (!updatedReview) {
+      throw new NotFoundException(`Review with id '${id}' not found.`);
     }
 
-    this.updatePlaceRating(place, data.reviews);
+    await this.syncPlaceStats(updatedReview.placeId);
 
-    await this.jsonRepository.writeData(data);
-
-    return review;
+    return updatedReview.toJSON();
   }
 
   async remove(id: string) {
-    const data = await this.jsonRepository.readData();
+    const review = await this.reviewModel.findOne({ id });
 
-    const reviewIndex = data.reviews.findIndex(
-      (review: Review) => review.id === id,
-    );
-
-    if (reviewIndex === -1) {
-      throw new NotFoundException(
-        `Review with id '${id}' not found.`,
-      );
+    if (!review) {
+      throw new NotFoundException(`Review with id '${id}' not found.`);
     }
 
-    const deletedReview = data.reviews[reviewIndex];
+    const deletedReview = await this.reviewModel.findOneAndDelete({ id });
 
-    const place = data.places.find(
-      (place: Place) => place.id === deletedReview.placeId,
-    );
-
-    if (!place) {
-      throw new NotFoundException(
-        `Place with id '${deletedReview.placeId}' not found.`,
-      );
+    if (!deletedReview) {
+      throw new NotFoundException(`Review with id '${id}' not found.`);
     }
 
-    data.reviews.splice(reviewIndex, 1);
+    await this.syncPlaceStats(deletedReview.placeId);
 
-    this.updatePlaceRating(place, data.reviews);
-
-    await this.jsonRepository.writeData(data);
-
-    return deletedReview;
+    return deletedReview.toJSON();
   }
 
   async findByPlace(placeId: string) {
-    const data = await this.jsonRepository.readData();
+    const place = await this.placeModel.findOne({ id: placeId });
 
-    const placeExists = data.places.some(
-      (place: Place) => place.id === placeId,
-    );
-
-    if (!placeExists) {
-      throw new NotFoundException(
-        `Place with id '${placeId}' not found.`,
-      );
+    if (!place) {
+      throw new NotFoundException(`Place with id '${placeId}' not found.`);
     }
 
-    return data.reviews.filter(
-      (review: Review) => review.placeId === placeId,
-    );
+    return this.reviewModel.find({ placeId }).sort({ createdAt: -1 }).lean();
   }
 
-  private updatePlaceRating(
-    place: Place,
-    reviews: Review[],
-  ) {
-    const placeReviews = reviews.filter(
-      (review) => review.placeId === place.id,
-    );
+  private async syncPlaceStats(placeId: string) {
+    const [reviewStats] = await this.reviewModel.aggregate([
+      { $match: { placeId } },
+      {
+        $group: {
+          _id: '$placeId',
+          averageRating: { $avg: '$rating' },
+          reviewCount: { $sum: 1 },
+        },
+      },
+    ]);
 
-    place.reviewCount = placeReviews.length;
+    const place = await this.placeModel.findOne({ id: placeId });
 
-    if (placeReviews.length === 0) {
-      place.averageRating = null;
+    if (!place) {
       return;
     }
 
-    const totalRating = placeReviews.reduce(
-      (total, review) => total + review.rating,
-      0,
-    );
+    if (!reviewStats) {
+      place.averageRating = null;
+      place.reviewCount = 0;
+      await place.save();
+      return;
+    }
 
-    place.averageRating =
-      totalRating / placeReviews.length;
+    place.averageRating = reviewStats.averageRating ?? null;
+    place.reviewCount = reviewStats.reviewCount ?? 0;
+    await place.save();
   }
 }

@@ -1,4 +1,4 @@
-import {ArgumentsHost, Catch, ExceptionFilter, HttpException,HttpStatus,} from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ProblemDetails } from '../interfaces/problem-details.interface.js';
 
@@ -9,6 +9,13 @@ export class ProblemDetailsFilter implements ExceptionFilter {
 
     const response = context.getResponse<Response>();
     const request = context.getRequest<Request>();
+
+    const requestId = request.headers['x-request-id'] ?? 'unknown';
+    Logger.error(
+      `Request ${request.method} ${request.originalUrl} failed with status ${exception instanceof HttpException ? exception.getStatus() : 500}. RequestId=${requestId}`,
+      exception instanceof Error ? exception.stack : undefined,
+      'ProblemDetailsFilter',
+    );
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
     let title = 'Internal Server Error';
@@ -43,6 +50,12 @@ export class ProblemDetailsFilter implements ExceptionFilter {
       } else if (status === HttpStatus.CONFLICT) {
         title = 'Conflict';
         type = '/errors/conflict';
+      } else if (status === HttpStatus.UNSUPPORTED_MEDIA_TYPE) {
+        title = 'Unsupported Media Type';
+        type = '/errors/unsupported-media-type';
+      } else if (status === HttpStatus.TOO_MANY_REQUESTS) {
+        title = 'Too Many Requests';
+        type = '/errors/too-many-requests';
       }
     }
 
